@@ -1,24 +1,65 @@
 import { useState } from 'react';
 import { AuthConsumer } from '../../providers/AuthProvider';
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Container } from 'react-bootstrap';
+import Flash from '../shared/Flash';
+import { Link } from 'react-router-dom';
 
-const Register = ({ handleRegister }) => {
-  const [user, setUser] = useState({ email: '', password: '', passwordConfirmation: '' })
+const Register = ({ handleRegister, msgs, setMsgs }) => {
+  const [user, setUser] = useState({ first_name: '', last_name: '', image: '', email: '', password: '', passwordConfirmation: '' })
 
   const handleSubmit = (e) => {
     e.preventDefault()
     if ( user.password === user.passwordConfirmation) {
       handleRegister(user);
-      setUser({ email: '', password: '', passwordConfirmation: '' })
+      setUser({ first_name: '', last_name: '', image: '', email: '', password: '', passwordConfirmation: '' })
     } else {
       alert('Passwords does not match')
     }
   }
 
   return (
-    <>
-      <h1>Register</h1>
+    <Container>
+      { msgs ?
+        <Flash
+          variant={msgs.variant}
+          msg={msgs.msg}
+          setErrors={setMsgs}
+        />
+        :
+        null
+      }
+      <h1 className='text-center'>Register</h1>
       <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3">
+          <Form.Label>First Name</Form.Label>
+          <Form.Control 
+            name='first_name'
+            value={user.first_name}
+            onChange={(e) => setUser({...user, first_name: e.target.value })}
+            required
+            placeholder="Enter first name"
+          />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Last Name</Form.Label>
+          <Form.Control 
+            name='last_name'
+            value={user.last_name}
+            onChange={(e) => setUser({...user, last_name: e.target.value })}
+            required
+            placeholder="Enter Last name"
+          />
+        </Form.Group>
+
+        <Form.Group className="mb-3">
+          <Form.Label>Profile Image</Form.Label>
+          <Form.Control 
+            name='image'
+            value={user.image}
+            onChange={(e) => setUser({...user, image: e.target.value })}
+          />
+        </Form.Group>
+
         <Form.Group className="mb-3">
           <Form.Label>Email address</Form.Label>
           <Form.Control 
@@ -58,7 +99,10 @@ const Register = ({ handleRegister }) => {
           Submit
         </Button>
       </Form>
-    </>
+      <Link to='/login'>
+        Already have a account? Login
+      </Link>
+    </Container>
   )
 }
 
